@@ -4,7 +4,7 @@ import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (href, placeholder, class, src)
+import Html.Attributes exposing (style, href, placeholder, class, src)
 import Html.Events exposing (onClick, onInput)
 
 view : Model -> Html Msg
@@ -13,7 +13,7 @@ view model =
     text "Buscar hoteles para:",
     renderDateInput Checkin,
     renderDateInput Checkout,
-    a [ href "#", class "button-hotel", onClick FetchHotels ] [ text "BUSCAR" ]
+    a [ href "#", class "button-hotel", style [("margin","auto")] ,onClick FetchHotels ] [ text "BUSCAR" ]
   ]
 
 renderDateInput : (String -> Msg) -> Html Msg
