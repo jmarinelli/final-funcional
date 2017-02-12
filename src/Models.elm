@@ -10,7 +10,8 @@ type alias Hotel =
   , price : Float
   , image : String
   , regime : String
-  , amenities : List String }
+  , amenities : List String
+  , slug : String }
 
 type alias Filters =
   { checkin: String

@@ -20,13 +20,14 @@ decodeResponse =
 
 hotelDecoder : Decoder Hotel
 hotelDecoder =
-  map6 Hotel
+  map7 Hotel
     (field "name" string)
     (field "stars" float)
-    (at [ "rate", "price", "total" ] float)
+    (at [ "rate", "price", "show_amount_per_night_per_room" ] float)
     (at [ "images", "0", "url" ] string)
     (at [ "rate", "meal_plan", "description" ] string )
     (at [ "amenities" ] (list amenityDecoder) )
+    (field "slug" string)
 
 amenityDecoder : Decoder String
 amenityDecoder =

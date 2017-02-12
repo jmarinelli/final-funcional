@@ -9077,9 +9077,9 @@ var _elm_lang$http$Http$StringPart = F2(
 		return {ctor: 'StringPart', _0: a, _1: b};
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
-var _user$project$Models$Hotel = F6(
-	function (a, b, c, d, e, f) {
-		return {name: a, stars: b, price: c, image: d, regime: e, amenities: f};
+var _user$project$Models$Hotel = F7(
+	function (a, b, c, d, e, f, g) {
+		return {name: a, stars: b, price: c, image: d, regime: e, amenities: f, slug: g};
 	});
 var _user$project$Models$Filters = F4(
 	function (a, b, c, d) {
@@ -9137,8 +9137,8 @@ var _user$project$Utils$renderImage20 = function (link) {
 	return A3(_user$project$Utils$renderImage, link, 20, 20);
 };
 var _user$project$HotelListConnector$amenityDecoder = A2(_elm_lang$core$Json_Decode$field, 'code', _elm_lang$core$Json_Decode$string);
-var _user$project$HotelListConnector$hotelDecoder = A7(
-	_elm_lang$core$Json_Decode$map6,
+var _user$project$HotelListConnector$hotelDecoder = A8(
+	_elm_lang$core$Json_Decode$map7,
 	_user$project$Models$Hotel,
 	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode$field, 'stars', _elm_lang$core$Json_Decode$float),
@@ -9152,7 +9152,7 @@ var _user$project$HotelListConnector$hotelDecoder = A7(
 				_0: 'price',
 				_1: {
 					ctor: '::',
-					_0: 'total',
+					_0: 'show_amount_per_night_per_room',
 					_1: {ctor: '[]'}
 				}
 			}
@@ -9197,7 +9197,8 @@ var _user$project$HotelListConnector$hotelDecoder = A7(
 			_0: 'amenities',
 			_1: {ctor: '[]'}
 		},
-		_elm_lang$core$Json_Decode$list(_user$project$HotelListConnector$amenityDecoder)));
+		_elm_lang$core$Json_Decode$list(_user$project$HotelListConnector$amenityDecoder)),
+	A2(_elm_lang$core$Json_Decode$field, 'slug', _elm_lang$core$Json_Decode$string));
 var _user$project$HotelListConnector$decodeResponse = A2(
 	_elm_lang$core$Json_Decode$at,
 	{
@@ -9579,76 +9580,6 @@ var _user$project$HotelFilters$applyFilters = F2(
 			filters.name,
 			A2(_user$project$HotelFilters$filterByStars, filters.stars, hotels));
 	});
-var _user$project$HotelResults$renderHotelPrice = function (hotel) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('box-hotel-item box-hotel-price'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html$text('Precio total'),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('price'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'ARS ',
-								_elm_lang$core$Basics$toString(hotel.price))),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('Impuestos y tasas incluidos'),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$br,
-							{ctor: '[]'},
-							{ctor: '[]'}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$a,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$href('#'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('button-hotel'),
-										_1: {ctor: '[]'}
-									}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('COMPRAR'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			}
-		});
-};
 var _user$project$HotelResults$renderHotelImage = function (image) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -9734,28 +9665,120 @@ var _user$project$HotelResults$renderHotelDescription = function (hotel) {
 			}
 		});
 };
-var _user$project$HotelResults$renderHotel = function (hotel) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('box-hotel'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _user$project$HotelResults$renderHotelImage(hotel.image),
-			_1: {
+var _user$project$HotelResults$hotelRef = F3(
+	function (slug, checkin, checkout) {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'https://almundo.com.ar/hotels/detail/',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				slug,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'?date=',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						checkin,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							',',
+							A2(_elm_lang$core$Basics_ops['++'], checkout, '&rooms=2'))))));
+	});
+var _user$project$HotelResults$renderHotelPrice = F2(
+	function (hotel, filters) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
 				ctor: '::',
-				_0: _user$project$HotelResults$renderHotelDescription(hotel),
+				_0: _elm_lang$html$Html_Attributes$class('box-hotel-item box-hotel-price'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('Precio por noche por habitación'),
 				_1: {
 					ctor: '::',
-					_0: _user$project$HotelResults$renderHotelPrice(hotel),
-					_1: {ctor: '[]'}
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('price'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'ARS ',
+									_elm_lang$core$Basics$toString(hotel.price))),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Impuestos y tasas no incluidos'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$br,
+								{ctor: '[]'},
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$a,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$href(
+											A3(_user$project$HotelResults$hotelRef, hotel.slug, filters.checkin, filters.checkout)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('button-hotel'),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('COMPRAR'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
 				}
-			}
-		});
-};
+			});
+	});
+var _user$project$HotelResults$renderHotel = F2(
+	function (filters, hotel) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('box-hotel'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _user$project$HotelResults$renderHotelImage(hotel.image),
+				_1: {
+					ctor: '::',
+					_0: _user$project$HotelResults$renderHotelDescription(hotel),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$HotelResults$renderHotelPrice, hotel, filters),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
 var _user$project$HotelResults$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -9771,7 +9794,7 @@ var _user$project$HotelResults$view = function (model) {
 				},
 				A2(
 					_elm_lang$core$List$map,
-					_user$project$HotelResults$renderHotel,
+					_user$project$HotelResults$renderHotel(model.appliedFilters),
 					A2(_user$project$HotelFilters$applyFilters, model.appliedFilters, model.hotels))),
 			_1: {ctor: '[]'}
 		});

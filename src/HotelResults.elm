@@ -8,6 +8,10 @@ import Html exposing (..)
 import Html.Attributes exposing (width, height, href, style, type_, class, src)
 import Html.Events exposing (onClick)
 
+hotelRef : String -> String -> String -> String
+hotelRef slug checkin checkout =
+  "https://almundo.com.ar/hotels/detail/" ++ slug ++ "?date=" ++ checkin ++ "," ++ checkout ++ "&rooms=2"
+
 renderAmenity : String -> Html Msg
 renderAmenity amenity =
   case amenity of
@@ -35,29 +39,29 @@ renderHotelDescription hotel =
       div [ class "hotel-description" ] (List.map renderAmenity hotel.amenities)
     ]
 
-renderHotelPrice : Hotel -> Html Msg
-renderHotelPrice hotel =
+renderHotelPrice : Hotel -> Filters -> Html Msg
+renderHotelPrice hotel filters =
   div [ class "box-hotel-item box-hotel-price" ]
   [
-    text "Precio total",
+    text "Precio por noche por habitación",
     div [ class "price" ] [ text ("ARS " ++ (toString hotel.price)) ],
-    div [] [ text "Impuestos y tasas incluidos" ],
+    div [] [ text "Impuestos y tasas no incluidos" ],
     br [] [],
-    a [ href "#", class "button-hotel" ] [ text "COMPRAR" ]
+    a [ href (hotelRef hotel.slug filters.checkin filters.checkout), class "button-hotel" ] [ text "COMPRAR" ]
   ]
 
-renderHotel : Hotel -> Html Msg
-renderHotel hotel =
+renderHotel : Filters -> Hotel -> Html Msg
+renderHotel filters hotel =
   div [ class "box-hotel" ]
     [
       (renderHotelImage hotel.image),
       (renderHotelDescription hotel),
-      (renderHotelPrice hotel)
+      (renderHotelPrice hotel filters)
     ]
 
 view : Model -> Html Msg
 view model =
   div [] [
     div [ class "leftColumn" ]
-      (List.map renderHotel (HotelFilters.applyFilters model.appliedFilters model.hotels))
+      (List.map (renderHotel model.appliedFilters) (HotelFilters.applyFilters model.appliedFilters model.hotels))
   ]
